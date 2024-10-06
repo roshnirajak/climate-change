@@ -34,7 +34,7 @@
             width: 0;
             height: 0;
             opacity: 0;
-            transition: width 2s, height 2s, opacity 2s;
+            transition: opacity 1s ease-in-out;
         }
 
         #message {
@@ -82,7 +82,6 @@
         }
 
         .affects {
-            display: flex;
             justify-content: space-between;
             align-items: center;
             position: absolute;
@@ -94,16 +93,30 @@
             transition: opacity 2s ease;
         }
 
-        .affects h1 {
-            font-size: 48px;
-            font-family: Arial, sans-serif;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        .affects #affectsText {
+            position: absolute;
+            top: 20%
+        }
+
+        .affects span {
+            font-size: 1.7rem;
+        }
+
+        .affects ul {
+            font-size: 1.4rem;
+            z-index: 3
         }
 
         .affects img {
             max-height: 400px;
             width: auto;
             transition: opacity 2s ease;
+        }
+
+        #continueButton {
+            position: absolute;
+            right: 10%;
+            z-index: 11;
         }
     </style>
 </head>
@@ -116,44 +129,60 @@
             <li>Green House Gases <br>
                 - Greenhouse gases (GHGs) are gases in the Earth’s atmosphere that trap heat. <br>
                 - They allow sunlight to enter the atmosphere and warm the Earth’s surface, <br> but they prevent some
-                of the heat from escaping back into space. <br>
-                - This process is known as the greenhouse effect
+                of the heat from escaping back into space. <br>
+                - This process is known as the greenhouse effect.
             </li>
             <li>Human Activities <br>
-                - Human activities are the main cause of climate change.<br>
-                - People burn fossil fuels and convert land from forests to agriculture. <br>
-                - Burning fossil fuels produces carbon dioxide, a greenhouse gas. <br>
+                - Pyrogenic emissions from wildfires or burning of biofuels.<br>
+                - Methane(CH4) and Carbon dioxide (CO2) emissions by burning fossil fuels.<br>
+                - Disrupted concentration of methane levels in the atmosphere.<br>
             </li>
-            <li>Volcanic Erruptions</li>
+            <li>Pollution <br>
+                - Increased levels of carbon monoxide in the troposphere. <br>
+                - Increased level of CO2 in the sea.
+            </li>
         </ul>
         <p id="message-click">Click to continue</p>
     </div>
-    <div class="affects">
-        <p id="affectsText">
-            <span>Affects</span><br>
-            hekko
-        </p> 
-        <img id="image" src="assets/img/flood.jpg" style="opacity: 0;"> <!-- Image on the right -->
-    </div>
 
+    <div class="affects">
+        <div id="affectsText">
+            <h1>Effects of Climate Change</h1>
+            <ul>
+                <li>Global Warming <br>
+                    - An increase in the global average surface temperature. <br>
+                    - Some areas of the world will warm more than the global average while others will warm less. <br>
+                    - Global warming is an indicator of climate change.</li>
+                <li>Depleting Ozone Layer <br>
+                    - The ozone layer protects people and life on Earth. <br>
+                    - Successfully protecting the ozone layer helps deliver many of the Sustainable Development Goals.
+                    <br>
+                    - But ozone is now depleting because of human-produced chlorofluorocarbons (CFCs).
+                </li>
+            </ul>
+            <button id="continueButton" style="display: none;">Click to continue</button>
+        </div>
+        <img id="image" src="assets/img/flood.jpg" style="opacity: 0;">
+    </div>
 
     <div id="overlay">
         <div id="overlay-text">
-
-            <p><span class="heading">What is Climate Change?</span> <br> <br>
+            <p><span class="heading">What is Climate Change?</span> <br><br>
                 Climate change is a long-term shift in weather conditions identified by changes in temperature,
                 precipitation, winds, and other indicators. <br>Climate change can involve both changes in average
-                conditions and changes in variability, including, for example, extreme events. <br> <br>
+                conditions and changes in variability, including, for example, extreme events.<br><br>
                 <span id="clickMessage"
-                    style="font-size: 18px; margin-top: 10px; opacity: 0; transition: opacity 0.5s ease-in;;">
+                    style="font-size: 18px; margin-top: 10px; opacity: 0; transition: opacity 0.5s ease-in;">
                     Click to continue
                 </span>
             </p>
         </div>
     </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.0/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
     <script>
         let scene, camera, renderer, earthModel, isOverlayClicked = false, isEarthClicked = false;
 
@@ -187,7 +216,7 @@
             setTimeout(() => {
                 const clickMessage = document.getElementById('clickMessage');
                 clickMessage.style.opacity = '1';
-            }, 3000);
+            }, 4000);
 
             window.addEventListener('click', handleOverlayClick);
         }
@@ -209,52 +238,92 @@
         }
 
         function morphToImage() {
-            if (isEarthClicked) return; // Prevent multiple morph animations
+            if (isEarthClicked) return;
             isEarthClicked = true;
 
             const message = document.getElementById('message');
-            if (message) message.style.opacity = '0'; // Hide the "Click to move" message
+            if (message) message.style.opacity = '0';
 
-            // Animate the Earth's rotation and camera zoom
             gsap.to(earthModel.rotation, { y: earthModel.rotation.y + Math.PI, duration: 3, ease: "power2.inOut" });
             gsap.to(camera.position, {
                 z: 2, duration: 3, ease: "power2.inOut", onComplete: () => {
-                    // Shrink the Earth model and remove it
                     gsap.to(earthModel.scale, {
                         x: 0, y: 0, z: 0, duration: 1, onComplete: () => {
                             scene.remove(earthModel);
 
-                            // Show the "Affects" section (text and image) once Earth is removed
                             const affectsElement = document.querySelector('.affects');
                             const image = document.getElementById('image');
                             const affectsText = document.getElementById('affectsText');
 
-                            // Set the image dimensions and position properly
                             image.style.width = 'auto';
-                            image.style.height = '300px';
+                            image.style.height = '250px';
                             image.style.top = '20%';
                             image.style.right = '10%';
+                            image.style.transition = 'opacity 1s ease-in-out';
 
-                            // Make both the text and the image visible with smooth transition
-                            affectsElement.style.opacity = '1'; // Show the entire container
-                            image.style.opacity = '1';          // Show the image
-                            affectsText.style.opacity = '1';     // Show the "Affects" text
+                            affectsElement.style.opacity = '1';
+                            image.style.opacity = '1';
+                            affectsText.style.opacity = '1';
+                            startImageCycle();
                         }
                     });
                 }
             });
         }
 
+        function startImageCycle() {
+            const images = [
+                'assets/img/drought.jpg',
+                'assets/img/glacier.jpg',
+                'assets/img/flood.jpg'
+            ];
+            let currentImageIndex = 0;
+            const imageElement = document.getElementById('image');
+
+            function cycleImages() {
+                gsap.to(imageElement, {
+                    opacity: 0, duration: 1, onComplete: () => {
+                        currentImageIndex = (currentImageIndex + 1) % images.length;
+                        imageElement.src = images[currentImageIndex];
+
+                        imageElement.style.width = 'auto';
+                        imageElement.style.height = '250px';
+                        imageElement.style.top = '20%';
+                        imageElement.style.right = '10%';
+
+                        imageElement.onload = () => {
+                            gsap.to(imageElement, { opacity: 1 });
+                        };
+                        setTimeout(cycleImages, 3000);
+                    }
+                });
+            }
+
+            imageElement.src = images[currentImageIndex];
+            gsap.to(imageElement, { opacity: 1, duration: 1 });
+
+            setTimeout(cycleImages, 3000);
+        }
 
         function animate() {
             requestAnimationFrame(animate);
 
-            // Continue rotating the Earth model
             if (earthModel) {
                 earthModel.rotation.y += 0.01;
             }
 
             renderer.render(scene, camera);
+        }
+
+        function showContinueButton() {
+            const continueButton = document.getElementById('continueButton');
+            setTimeout(() => {
+                continueButton.style.display = 'block';
+            }, 3500);
+
+            continueButton.addEventListener('click', () => {
+                window.location.href = "prevent.html";
+            });
         }
 
         window.addEventListener('resize', function () {
@@ -264,12 +333,9 @@
         });
 
         init();
-
-
+        showContinueButton();
     </script>
-
-
-
 </body>
+
 
 </html>
