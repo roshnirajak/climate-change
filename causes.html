@@ -35,12 +35,12 @@
             width: 0;
             height: 0;
             opacity: 0;
-            transition: opacity 1s ease-in-out;
+            transition: opacity 0.3s ease-in;
         }
 
         #message {
             position: absolute;
-            top: 10%;
+            top: 5%;
             left: 5%;
             font-size: large;
             color: white;
@@ -130,7 +130,8 @@
 <body>
     <div id="container"></div>
     <div id="message">
-        <h1>Causes of Climate Change</h1>
+        <h1> What is the cause of Climate Change</h1>
+        <h2>The cause is us.</h2>
         <ul>
             <li>Green House Gases <br>
                 - Greenhouse gases (GHGs) are gases in the Earth’s atmosphere that trap heat. <br>
@@ -263,9 +264,9 @@
 
                             image.style.width = 'auto';
                             image.style.height = '250px';
-                            image.style.top = '20%';
+                            image.style.top = '30%';
                             image.style.right = '10%';
-                            image.style.transition = 'opacity 1s ease-in-out';
+                            image.style.transition = 'opacity 0.3s ease';
 
                             affectsElement.style.opacity = '1';
                             image.style.opacity = '1';
@@ -288,13 +289,13 @@
 
             function cycleImages() {
                 gsap.to(imageElement, {
-                    opacity: 0, duration: 1, onComplete: () => {
+                    opacity: 0, duration: 0.4, onComplete: () => {
                         currentImageIndex = (currentImageIndex + 1) % images.length;
                         imageElement.src = images[currentImageIndex];
 
                         imageElement.style.width = 'auto';
                         imageElement.style.height = '250px';
-                        imageElement.style.top = '20%';
+                        imageElement.style.top = '30%';
                         imageElement.style.right = '10%';
 
                         imageElement.onload = () => {
